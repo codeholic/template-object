@@ -1,0 +1,6 @@
+Revision history for Perl extension Template::Object.
+
+0.01  Thu Jun 17 10:48:41 2010
+	- original version; created by h2xs 1.23 with options
+		-X Template::Object
+

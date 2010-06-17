@@ -1,0 +1,71 @@
+NAME
+    Template::Object - lightweight object-oriented template engine
+
+SYNOPSIS
+  example.tpl
+        <h1>{{title}}</h1> 
+        <!-- BEGIN list --> 
+        <ul> 
+        <!-- BEGIN item --> 
+            <li>{{name}} are {{attr}}</li> 
+        <!-- END item --> 
+        </ul> 
+        <!-- END list --> 
+        <!-- BEGIN empty --> 
+        <p>The list is empty.</p> 
+        <!-- END empty -->
+
+  example.pl
+        use Template::Object;
+
+        my @colors = (
+            { name => 'apples', attr => 'red' },
+            { name => 'bananas', attr => 'yellow' },
+            { name => 'people', attr => 'blue' },
+        );
+
+        Template::Object->root('templates');
+
+        my $t = Template::Object->new(file => 'example.tpl');
+        $t->vars(title => 'Colors');
+
+        # TMTOWTDI!
+        # my $t = Template::Object->new(file => 'example.tpl')->vars(title => 'Colors');
+        # my $t = Template::Object->new(file => 'example.tpl')->vars(title => [ 'Colors' ]);
+        # my $t = Template::Object->new(file => 'example.tpl')->vars({ title => 'Colors' });
+        # my $t = Template::Object->new(file => 'example.tpl')->vars({ title => [ 'Colors' ] });
+        # my $t = Template::Object->new(file => 'example.tpl', vars => { title => 'Colors' });
+        # my $t = Template::Object->new(file => 'example.tpl', vars => { title => [ 'Colors' ] });
+        # my $t = Template::Object->new({ file => 'example.tpl', vars => { title => [ 'Colors' ] } });
+
+        if (@colors) {
+            my ($list) = map { $t->extract_block($_) } qw/list empty/;
+            foreach (@colors) {
+                my $item = $list->extract_block('item');
+                
+            # TMTOWTDI!
+                #my $item = $list->extract_block('item', { class => 'Template::Object' });
+                
+            $item->vars($_); # TMTOWTDI! ...
+                $list->vars(item => $item, { append => 1 });
+                
+            # TMTOTDI!
+                # $list->vars({ item => $item }, { append => 1 });
+                # $list->vars({ item => [ $item ] }, { append => 1 });
+            }
+            $t->vars(list => $list);
+        }
+        else {
+            my ($empty) = map { $t->extract_block($_) } qw/empty list/;
+            $t->vars(empty => $empty);
+        }
+
+        print $t;
+
+COPYRIGHT AND LICENSE
+    Copyright (C) 2006-2010 by Ivan Fomichev
+
+    This library is free software; you can redistribute it and/or modify it
+    under the same terms as Perl itself, either Perl version 5.10.0 or, at
+    your option, any later version of Perl 5 you may have available.
+
