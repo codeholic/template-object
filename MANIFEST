@@ -1,6 +1,11 @@
 Changes
+lib/Template/Object.pm
+lib/Template/Input/Select.pm
+lib/Template/Input/Text.pm
+lib/Template/Input.pm
 Makefile.PL
 MANIFEST
 README
-t/Template-Object.t
-lib/Template/Object.pm
+t/text.t
+t/select.t
+t/object.t
